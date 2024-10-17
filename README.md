@@ -25,33 +25,9 @@ Este requerimiento implica que el sistema debe poder manejar consultas a gran es
 
 ## Tácticas Utilizadas
 
-- **Caché**: Implementar caché en consultas frecuentes para reducir la carga en la base de datos y mejorar los tiempos de respuesta.
-- **Sharding**: Distribuir los registros de logs en diferentes bases de datos según algún criterio, permitiendo un acceso más rápido.
-- **Balanceo de carga**: Usar un balanceador de carga para repartir las solicitudes entre varias instancias de la aplicación, optimizando el rendimiento.
-- **Optimización de consultas**: Usar índices en las columnas más consultadas para acelerar el acceso a los datos.
-
-## Diagramas
-
-### Diagrama de Despliegue
-
-```mermaid
-graph TD;
-    A[Cliente] -->|HTTP Requests| B[Balanceador de Carga]
-    B -->|Forward Requests| C[Instancia de Aplicación 1]
-    B -->|Forward Requests| D[Instancia de Aplicación 2]
-    C --> E[Base de Datos PostgreSQL]
-    D --> E
-```
-
-### Diagrama de Componentes
-
-```mermaid
-graph TD;
-    A[Frontend] -->|Petición de Logs| B[Backend]
-    B -->|Consulta de Logs| C[Base de Datos]
-    B -->|Balanceo de Carga| D[Balanceador de Carga]
-    D -->|Redirección| E[Instancia de Aplicación]
-```
+1. **Escalabilidad Horizontal:** La aplicación está diseñada para agregar más instancias bajo demanda, permitiendo que el sistema maneje un mayor volumen de solicitudes.
+2. **Balanceo de Carga:** Utilizamos un balanceador de carga para distribuir el tráfico entre varias instancias, mejorando la disponibilidad y la fiabilidad.
+3. **Caché de Consultas:** Implementación de técnicas de caché para reducir los tiempos de respuesta en las consultas más frecuentes.
 
 ## Estilos Utilizados
 
@@ -60,158 +36,54 @@ graph TD;
   - **Modelo**: Define la estructura de los datos (logs).
   - **Vista**: Presenta la información a los usuarios (HTML y CSS).
   - **Controlador**: Maneja la lógica y las interacciones (Django views).
-- **RESTful API**: Se utiliza un enfoque REST para la comunicación entre el frontend y el backend, permitiendo interacciones simples y eficientes.
-- **Microservicios**: El uso de microservicios permite que diferentes componentes de la aplicación puedan escalar independientemente, mejorando la resiliencia y escalabilidad del sistema.
+- El proyecto utiliza un enfoque de diseño simple y efectivo para la interfaz de usuario. El archivo `styles.css` en la carpeta `static/` proporciona estilos básicos para la aplicación, garantizando que sea visualmente accesible y fácil de usar.
 
-## Tecnologías Usadas
+## Diagramas
 
-### 1. **Django**
+### Diagrama de Componentes
 
-- **Descripción**: Framework web utilizado para el desarrollo de la aplicación. Se encarga de gestionar la lógica de negocio y la interfaz de usuario.
-- **Ubicación en el código**:
-  - `urls.py`: Maneja las rutas de la aplicación.
-  - `views.py`: Controla la lógica de la presentación de logs.
-  - `models.py`: Define la estructura de los datos de logs.
-
-```python
-# Ejemplo en urls.py
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('logs/', views.logs_view, name='logs_view'),
-]
+```mermaid
+graph TD;
+    A[Cliente] -->|HTTP Requests| B[Balanceador de Carga];
+    B --> C[Instancia 1];
+    B --> D[Instancia 2];
+    C --> E[Base de Datos];
+    D --> E;
+    E --> F[Servidor de Logs];
 ```
 
-### 2. **PostgreSQL**
+### Diagrama de Despliegue
 
-- **Descripción**: Base de datos relacional que almacena los logs y permite realizar consultas eficientes.
-- **Ubicación en el código**:
-  - `settings.py`: Configuración de la conexión a PostgreSQL.
-
-```python
-# Ejemplo en settings.py
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'log_db',
-        'USER': 'admin',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+```mermaid
+graph TD;
+    A[Balanceador de Carga] --> B[Grupo de Instancias];
+    B -->|Instancia 1| C[Aplicación Django];
+    B -->|Instancia 2| C[Aplicación Django];
+    C --> D[Base de Datos PostgreSQL];
 ```
 
-### 3. **Apache JMeter**
+## Tecnología
 
-- **Descripción**: Herramienta utilizada para simular múltiples usuarios realizando consultas de logs y medir el tiempo de respuesta.
-- **Uso**: Archivo `.jmx` configurado para pruebas de carga y simulación de múltiples usuarios accediendo simultáneamente.
+- **Django:** Framework web para el desarrollo de la aplicación.
+- **PostgreSQL:** Sistema de gestión de bases de datos utilizado para almacenar logs.
+- **Google Cloud Platform (GCP):** Infraestructura en la nube utilizada para implementar y escalar la aplicación.
+- **Mermaid:** Herramienta para generar diagramas en Markdown, utilizada para representar visualmente la arquitectura del sistema.
 
-```bash
-# Ejecución de pruebas con JMeter
-jmeter -n -t tests/load_test.jmx -l results/logs_test_results.jtl
-```
+## Instalación y Despliegue
 
-### 4. **GCC (Google Cloud Components)**
+1. Clona el repositorio:
 
-- **Descripción**: Se utiliza para el despliegue y simulación de balanceo de carga en un entorno escalable.
-- **Uso**: Configuración del balanceador de carga en `gcc-config.yaml` y despliegue con scripts de shell.
+   ```bash
+   git clone https://github.com/Diplomatictw0/repo-logs.git
+   cd repo-logs
+   ```
+2. Ejecuta los scripts de configuración en la carpeta `scripts/` para desplegar la aplicación y configurar el balanceador de carga.
+3. Accede a la aplicación a través de la dirección IP del balanceador de carga.
 
-```bash
-# Despliegue del balanceador de carga con GCC
-bash scripts/load_balancer.sh
-```
+## Contribuciones
 
-### 5. **Balanceador de carga con GCC**
+Las contribuciones son bienvenidas. Si deseas mejorar el proyecto o corregir errores, abre un issue o un pull request.
 
-- **Descripción**: El balanceador de carga distribuido asegura que las solicitudes entrantes se reparten entre varios nodos para optimizar el rendimiento.
-- **Ubicación en el código**:
-  - Implementación en `scripts/load_balancer.sh`.
+## Licencia
 
-```bash
-# Despliegue y configuración del balanceador de carga
-gcloud compute forwarding-rules create $FORWARDING_RULE_NAME --target-pool=$TARGET_POOL_NAME --region=$REGION --ports=8080
-```
-
-## Estructura del Proyecto
-
-```
-
-repo-logs/
-├── django_app/
-│   ├── logs_project/
-│   │   ├── __init__.py
-│   │   ├── settings.py
-│   │   ├── urls.py
-│   │   └── wsgi.py
-│   ├── logs_app/
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── migrations/
-│   │   │   └── __init__.py
-│   │   ├── models.py
-│   │   ├── tests.py
-│   │   ├── views.py
-│   │   └── urls.py
-│   ├── manage.py
-│   └── static/
-│       └── styles.css
-├── scripts/
-│   ├── deploy.sh         # Script para el despliegue y configuración de GCC
-│   ├── load_balancer.sh  # Configuración del balanceador de carga
-│   └── database_setup.sh # Script de inicialización de PostgreSQL y carga de datos
-├── csv/
-│   └── logs.csv          # Archivo CSV con 10,000 registros de logs
-├── gcc_setup/
-│   ├── gcc-config.yaml    # Configuración de GCC para simulación
-│   └── readme.md          # Guía específica para la configuración de GCC
-└── requeriments.txt
-└── README.md              # Documentación del proyecto
-```
-
-## Instalación y Configuración
-
-1. **Clonar el repositorio**:
-
-```bash
-git clone https://github.com/tuusuario/repo-logs.git
-cd repo-logs
-```
-
-2. **Instalar las dependencias**:
-
-```bash
-pip install -r requirements.txt
-```
-
-3. **Configurar PostgreSQL**:
-
-```bash
-psql -U postgres
-CREATE DATABASE log_db;
-```
-
-4. **Aplicar migraciones de Django**:
-
-```bash
-python manage.py migrate
-
-
-```
-
-5. **Desplegar el balanceador de carga con GCC**:
-
-```bash
-bash scripts/deploy.sh
-```
-
-¡El sistema está listo para ser utilizado!
-
-```
-
----
-
-Este README proporciona una visión integral del proyecto, detallando los ASR, tácticas, tecnologías, y diagramas necesarios para entender la arquitectura y el funcionamiento del sistema. Si necesitas más información o ajustes adicionales, no dudes en decírmelo.
-```
+Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
