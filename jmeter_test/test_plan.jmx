@@ -1,0 +1,2 @@
+# Ejecución de pruebas con JMeter
+jmeter -n -t tests/load_test.jmx -l results/logs_test_results.jtl

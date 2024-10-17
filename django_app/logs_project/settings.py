@@ -4,15 +4,15 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Seguridad
-SECRET_KEY = 'tu_clave_secreta'
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'your-secret-key'
 
-# Configuración del modo de depuración
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
-# Aplicaciones instaladas
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -20,10 +20,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'logs_app',  # Incluye tu aplicación de logs aquí
+    'logs_app',  # Asegúrate de incluir tu aplicación aquí
 ]
 
-# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -34,14 +33,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Configuración de la URL raíz
 ROOT_URLCONF = 'logs_project.urls'
 
-# Plantillas
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'logs_app', 'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -56,19 +53,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'logs_project.wsgi.application'
 
-# Configuración de la base de datos
+# Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'logs_db',
-        'USER': 'logs_user',
-        'PASSWORD': 'david',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'your_db_name',
+        'USER': 'your_db_user',
+        'PASSWORD': 'your_db_password',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
 
-# Contraseñas y validación
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -84,17 +81,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internacionalización
-LANGUAGE_CODE = 'es-es'
-
+# Internationalization
+LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-# Archivos estáticos
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
